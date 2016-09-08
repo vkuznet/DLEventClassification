@@ -30,5 +30,5 @@ The concrete example of pipeline is available here [2].
 
 ## References
 
-[1] https://github.com/diana-hep/c2numpy
-[2] https://github.com/diana-hep/c2numpy/tree/master/examples/CMSSW-with-C-interface
+- [1] https://github.com/diana-hep/c2numpy
+- [2] https://github.com/diana-hep/c2numpy/tree/master/examples/CMSSW-with-C-interface
