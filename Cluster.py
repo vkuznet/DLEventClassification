@@ -17,20 +17,14 @@ from sklearn.cluster import SpectralClustering
 from sklearn.cluster import AffinityPropagation
 import random
 from matplotlib import colors
+import preprocess
+MAX_CLUSTER = 4
 
-MAX_CLUSTER = 3
-
-def remove_labels(df):
-    del df['evt']
-    del df['lumi']
-    del df['run']
-    del df['label']
-    return df
     
     
 
-def find_best_cluster(df):
-    K = range(1,MAX_CLUSTER)
+def find_best_cluster(df, max_cluster):
+    K = range(1,max_cluster)
     models = [KMeans(n_clusters=k, random_state = 0).fit(df) for k in K]
     print('Completed: training...')
     centroids = [m.cluster_centers_ for m in models]
@@ -39,10 +33,8 @@ def find_best_cluster(df):
     dist = [np.min(d,axis=1) for d in all_distances]
     print('Computed: distances...')
     avg_distances = [sum(distances)/len(df.iloc[:,1]) for distances in dist]
-    print(avg_distances)
     #model = cl.k_means(clusters = k)
     #cluster_label = model.fit_predict(df)
-    
     return avg_distances
     
 #Try more clusters, 
@@ -51,7 +43,7 @@ def plot_elbow(df):
     x = range(1,MAX_CLUSTER)
     plt.plot(x,y)
     plt.axis([1,MAX_CLUSTER,2,8])
-    plt.show()
+    return x, y
     
 def plot_clusters_k_means(df):
     fig = plt.figure()
@@ -105,15 +97,41 @@ def convert_cluster_to_color(predictions):
     color = []
     for pred in predictions:
         if pred < 150:
-            color.append(list(colors.cnames.keys())[pred])
+            color.append(list(colors.cnames.keys())[pred*5])
         else:
             color.append('red')
     return color
     
-    
+def convert_label_to_color(labels):
+    color = []
+    for label in labels:
+        if label == 1:
+            color.append('black')
+        if label == 0:
+            color.append('yellow')
+        if label == 2:
+            color.append('red')
+        if label == 3:
+            color.append('blue')
+        if label == 4:
+            color.append('orange')
+        if label == 5:
+            color.append('white')
+        if label == 6:
+            color.append('purple')
+        if label == 7:
+            color.append('green')
+        if label == 8:
+            color.append('brown')
+        if label == 9:
+            color.append('pink')
+        if label == 10:
+            color.append('lavender')
+
+    return color 
     
 if __name__ == "__main__":
-    #df = remove_labels(preprocess.process_container_folder('cmsdata-2', '5-param'))
-    df = preprocess.process_container_folder('cmsdata-2', '5-param')
+    df = preprocess.remove_labels(preprocess.process_container_folder('cmsdata-2', '5-param'))
+    #df = preprocess.process_container_folder('cmsdata-2', '5-param')
     #cl.k_meanscluster(df)
     pass

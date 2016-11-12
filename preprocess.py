@@ -68,10 +68,7 @@ def sort_df_by_event(df):
     for gp in gb:
         df = gp[1].sort_values('pt', ascending = 0)
         train_y.append(df['label'].iloc[0])
-        del df['label']
-        del df['evt']
-        del df['run']
-        del df['lumi']
+        remove_labels(df)
         """mean = df[metric].mean()
         std = df[metric].std()
         max_pt = df[metric].max()"""
@@ -138,16 +135,27 @@ def examine_events(df):
     plt.axis([0,10,0,1000])
     plt.show()
     
+def remove_labels(df):
+    del df['evt']
+    del df['lumi']
+    del df['run']
+    del df['label']
+    try:
+        del df['TrackId']
+    except:
+        return df
+    return df
+    
 if __name__ == "__main__":
     train_x, labels = sort_df_by_event(process_container_folder('cmsdata_hits_4', '20-param'))
-    print("Finished Training...")
+    print("Finished Processing...")
     #print(train_x)
     #pca = PCA(n_components = math.ceil(math.sqrt(MINNUMPARTICLES*5)))
     #trans_x = pca.fit_transform(train_x)
     x_tr, x_tst, y_tr, y_tst = train_test_split(train_x, labels, test_size=0.33, random_state=3)
     #trans1_x = pca.fit_transform(x_tr)
     #trans2_x = pca.fit_transform(x_tst)
-    clf = svm.SVC(kernel = 'rbf', gamma = .001)
+    #clf = svm.SVC(kernel = 'rbf', gamma = .001)
     clf = RandomForestClassifier(n_estimators = 500)
     #param_grid = [{'C': [1, 10, 100, 1000], 'kernel': ['linear']},{'C': [1, 10, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']}]
     #search = GridSearchCV(clf, param_grid)
